@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prelim Lab Work 2 - Attendance Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        input:disabled {
+            background-color: #f5f5f5;
+            cursor: not-allowed;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .timestamp {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+            border: 2px solid #e9ecef;
+        }
+
+        .timestamp-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .timestamp-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #667eea;
+            font-family: 'Courier New', monospace;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .attendance-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 20px 0;
+        }
+
+        .attendance-item {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .attendance-item-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .attendance-item-details {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            border: 1px solid #f5c6cb;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .button-group button {
+            flex: 1;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+        }
+
+        .summary-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .summary-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .summary-stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .summary-stat:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            color: #666;
+        }
+
+        .stat-value {
+            font-weight: 700;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Section -->
+    <div id="loginSection" class="container">
+        <h1>🔐 Login</h1>
+        <p class="subtitle">Attendance Tracker System</p>
+        
+        <div id="loginError" class="error-message hidden"></div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+    <!-- Main Attendance Section -->
+    <div id="attendanceSection" class="container hidden">
+        <h1>📋 Attendance Tracker</h1>
+        <p class="subtitle">Record Student Attendance</p>
+        
+        <div id="successMessage" class="success-message hidden"></div>
+        
+        <!-- Current Timestamp Display -->
+        <div class="timestamp">
+            <div class="timestamp-label">Current Time</div>
+            <div id="currentTimestamp" class="timestamp-value">--:--:--</div>
+        </div>
+        
+        <form id="attendanceForm">
+            <div class="form-group">
+                <label for="studentName">Student Name</label>
+                <input type="text" id="studentName" name="studentName" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="courseYear">Course / Year</label>
+                <input type="text" id="courseYear" name="courseYear" placeholder="e.g., BSCS 2nd Year" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="timeIn">Time In</label>
+                <input type="text" id="timeIn" name="timeIn" disabled>
+            </div>
+            
+            <div class="form-group">
+                <label for="signature">E-Signature</label>
+                <input type="text" id="signature" name="signature" disabled>
+            </div>
+            
+            <button type="submit">Record Attendance</button>
+        </form>
+
+        <!-- Attendance List -->
+        <div id="attendanceListContainer" class="hidden">
+            <h3 style="margin-top: 30px; color: #333;">Today's Attendance</h3>
+            <div id="attendanceList" class="attendance-list"></div>
+        </div>
+
+        <!-- Summary Section -->
+        <div id="summarySection" class="summary-section hidden">
+            <div class="summary-title">📊 Attendance Summary</div>
+            <div class="summary-stat">
+                <span class="stat-label">Total Present</span>
+                <span id="totalPresent" class="stat-value">0</span>
+            </div>
+            <div class="summary-stat">
+                <span class="stat-label">First Arrival</span>
+                <span id="firstArrival" class="stat-value">--</span>
+            </div>
+            <div class="summary-stat">
+                <span class="stat-label">Latest Arrival</span>
+                <span id="latestArrival" class="stat-value">--</span>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="button-group">
+            <button class="btn-success" onclick="generateCSV()">📥 Download CSV</button>
+            <button class="btn-secondary" onclick="logout()">🚪 Logout</button>
+        </div>
+    </div>
+
+    <!-- Audio element for beep sound -->
+    <audio id="beepSound" preload="auto">
+        <!-- We'll generate the beep sound using JavaScript Web Audio API -->
+    </audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
