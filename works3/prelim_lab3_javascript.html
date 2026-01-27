@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prelim Lab Work 3 - Grade Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .lab-works {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .result {
+            display: none;
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 12px;
+            border-left: 5px solid #667eea;
+        }
+
+        .result.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .result-value {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .final-grade {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .grade-number {
+            font-size: 48px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 10px 0;
+        }
+
+        .letter-grade {
+            font-size: 24px;
+            color: #764ba2;
+            margin: 5px 0;
+        }
+
+        .remarks {
+            font-size: 18px;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .remarks.excellent { color: #10b981; }
+        .remarks.very-good { color: #3b82f6; }
+        .remarks.good { color: #8b5cf6; }
+        .remarks.satisfactory { color: #f59e0b; }
+        .remarks.passed { color: #f97316; }
+        .remarks.conditional { color: #ef4444; }
+        .remarks.failed { color: #dc2626; }
+
+        @media (max-width: 600px) {
+            .lab-works {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Prelim Grade Calculator</h1>
+        <p class="subtitle">Prelim Lab Work 3</p>
+        
+        <form id="gradeForm">
+            <div class="form-group">
+                <label for="studentName">Student Name</label>
+                <input type="text" id="studentName" required placeholder="Enter your name">
+            </div>
+
+            <label>Lab Work Grades</label>
+            <div class="lab-works">
+                <div class="form-group">
+                    <input type="number" id="lab1" required placeholder="Lab 1" min="0" max="100" step="0.01">
+                </div>
+                <div class="form-group">
+                    <input type="number" id="lab2" required placeholder="Lab 2" min="0" max="100" step="0.01">
+                </div>
+                <div class="form-group">
+                    <input type="number" id="lab3" required placeholder="Lab 3" min="0" max="100" step="0.01">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="classStanding">Class Standing</label>
+                <input type="number" id="classStanding" required placeholder="Enter class standing grade" min="0" max="100" step="0.01">
+            </div>
+
+            <div class="form-group">
+                <label for="prelimExam">Prelim Exam Score</label>
+                <input type="number" id="prelimExam" required placeholder="Enter prelim exam score" min="0" max="100" step="0.01">
+            </div>
+
+            <button type="submit">Calculate Grade</button>
+        </form>
+
+        <div class="result" id="result">
+            <h2>Grade Report</h2>
+            <div class="result-row">
+                <span class="result-label">Student Name:</span>
+                <span class="result-value" id="displayName"></span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">Lab Work Average:</span>
+                <span class="result-value" id="labAvg"></span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">Class Standing:</span>
+                <span class="result-value" id="displayCS"></span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">Prelim Exam:</span>
+                <span class="result-value" id="displayPE"></span>
+            </div>
+            
+            <div class="final-grade">
+                <div>Prelim Grade</div>
+                <div class="grade-number" id="finalGrade"></div>
+                <div class="letter-grade" id="letterGrade"></div>
+                <div class="remarks" id="remarks"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('gradeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get input values
+            const studentName = document.getElementById('studentName').value;
+            const lab1 = parseFloat(document.getElementById('lab1').value);
+            const lab2 = parseFloat(document.getElementById('lab2').value);
+            const lab3 = parseFloat(document.getElementById('lab3').value);
+            const classStanding = parseFloat(document.getElementById('classStanding').value);
+            const prelimExam = parseFloat(document.getElementById('prelimExam').value);
+            
+            // Calculate Lab Work Average
+            const labWorkAverage = (lab1 + lab2 + lab3) / 3;
+            
+            // Calculate Prelim Grade
+            // Formula: (60% × Average of Lab Works) + (10% × Class Standing) + (30% × Prelim Exam)
+            const prelimGrade = (0.60 * labWorkAverage) + (0.10 * classStanding) + (0.30 * prelimExam);
+            
+            // Determine Letter Grade and Remarks
+            let letterGrade, remarks, remarksClass;
+            
+            if (prelimGrade >= 97.5) {
+                letterGrade = "1.0";
+                remarks = "Excellent";
+                remarksClass = "excellent";
+            } else if (prelimGrade >= 94.5) {
+                letterGrade = "1.25";
+                remarks = "Excellent";
+                remarksClass = "excellent";
+            } else if (prelimGrade >= 91.5) {
+                letterGrade = "1.5";
+                remarks = "Very Good";
+                remarksClass = "very-good";
+            } else if (prelimGrade >= 88.5) {
+                letterGrade = "1.75";
+                remarks = "Very Good";
+                remarksClass = "very-good";
+            } else if (prelimGrade >= 85.5) {
+                letterGrade = "2.0";
+                remarks = "Good";
+                remarksClass = "good";
+            } else if (prelimGrade >= 82.5) {
+                letterGrade = "2.25";
+                remarks = "Good";
+                remarksClass = "good";
+            } else if (prelimGrade >= 79.5) {
+                letterGrade = "2.5";
+                remarks = "Satisfactory";
+                remarksClass = "satisfactory";
+            } else if (prelimGrade >= 76.5) {
+                letterGrade = "2.75";
+                remarks = "Satisfactory";
+                remarksClass = "satisfactory";
+            } else if (prelimGrade >= 74.5) {
+                letterGrade = "3.0";
+                remarks = "Passed";
+                remarksClass = "passed";
+            } else if (prelimGrade >= 70.0) {
+                letterGrade = "4.0";
+                remarks = "Conditional";
+                remarksClass = "conditional";
+            } else {
+                letterGrade = "5.0";
+                remarks = "Failed";
+                remarksClass = "failed";
+            }
+            
+            // Display Results
+            document.getElementById('displayName').textContent = studentName;
+            document.getElementById('labAvg').textContent = labWorkAverage.toFixed(2);
+            document.getElementById('displayCS').textContent = classStanding.toFixed(2);
+            document.getElementById('displayPE').textContent = prelimExam.toFixed(2);
+            document.getElementById('finalGrade').textContent = prelimGrade.toFixed(2);
+            document.getElementById('letterGrade').textContent = letterGrade;
+            
+            const remarksElement = document.getElementById('remarks');
+            remarksElement.textContent = remarks;
+            remarksElement.className = 'remarks ' + remarksClass;
+            
+            // Show result
+            document.getElementById('result').classList.add('show');
+            
+            // Scroll to result
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+    </script>
+</body>
+</html>
