@@ -1,5 +1,6 @@
 // Programmer Identifier: (Mykee Valenzuela L.) (25-1837-237)
 
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -14,7 +15,7 @@ public class StudentRecordsManager extends JFrame {
     
     public StudentRecordsManager() {
         // Set window title with your identifier
-        setTitle("Student Records Manager -(Mykee Valenzuela L.) (25-1837-237)");
+        setTitle("Student Records Manager - (Mykee Valenzuela L.) (25-1837-237)");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1000, 600);
         setLocationRelativeTo(null);
@@ -125,7 +126,38 @@ public class StudentRecordsManager extends JFrame {
     }
     
     private void loadDataFromCSV() {
-        String csvFile = "MOCK_DATA.csv";
+        // Try multiple possible locations for the CSV file
+        String[] possiblePaths = {
+            "MOCK_DATA.csv",                          // Same directory as .class file
+            "./MOCK_DATA.csv",                        // Current directory
+            "../MOCK_DATA.csv",                       // Parent directory
+            System.getProperty("user.dir") + "/MOCK_DATA.csv"  // Absolute path to current directory
+        };
+        
+        String csvFile = null;
+        File file = null;
+        
+        // Find the CSV file
+        for (String path : possiblePaths) {
+            file = new File(path);
+            if (file.exists()) {
+                csvFile = path;
+                break;
+            }
+        }
+        
+        if (csvFile == null) {
+            String currentDir = System.getProperty("user.dir");
+            JOptionPane.showMessageDialog(this,
+                "Error: MOCK_DATA.csv file not found!\n\n" +
+                "Current working directory: " + currentDir + "\n\n" +
+                "Please place MOCK_DATA.csv in one of these locations:\n" +
+                "1. Same folder as StudentRecordsManager.class\n" +
+                "2. Current directory: " + currentDir,
+                "File Not Found", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
         String line;
         String csvSplitBy = ",";
         
@@ -227,8 +259,30 @@ public class StudentRecordsManager extends JFrame {
         // Clear current table
         tableModel.setRowCount(0);
         
-        // Search through CSV and add matching rows
-        String csvFile = "MOCK_DATA.csv";
+        // Find the CSV file
+        String[] possiblePaths = {
+            "MOCK_DATA.csv",
+            "./MOCK_DATA.csv",
+            "../MOCK_DATA.csv",
+            System.getProperty("user.dir") + "/MOCK_DATA.csv"
+        };
+        
+        String csvFile = null;
+        for (String path : possiblePaths) {
+            File file = new File(path);
+            if (file.exists()) {
+                csvFile = path;
+                break;
+            }
+        }
+        
+        if (csvFile == null) {
+            JOptionPane.showMessageDialog(this,
+                "Error: MOCK_DATA.csv file not found!",
+                "File Not Found", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
         String line;
         String csvSplitBy = ",";
         int foundCount = 0;
